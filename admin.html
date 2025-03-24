@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - View Passphrases</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: black;
+      }
+      input {
+        width: -webkit-fill-available;
+        padding: 10px;
+        margin: 10px 0;
+        border: 2px solid #8b5cf6;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      .btn {
+        width: 100%;
+        background-color: #6a42b7;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Admin Panel - View Passphrases</h2>
+      <input
+        type="password"
+        id="adminPass"
+        placeholder="Enter Admin Password"
+      />
+      <button class="btn" onclick="fetchPassphrases()">Show Passphrases</button>
+
+      <table id="passphraseTable" style="display: none">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Passphrase</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script>
+      async function fetchPassphrases() {
+        const adminPassword = document.getElementById("adminPass").value;
+
+        if (adminPassword !== "admin123") {
+          alert("Incorrect password!");
+          return;
+        }
+
+        try {
+          let response = await fetch("http://localhost:3001/api/v1/password");
+          let data = await response.json();
+
+          if (!response.error) {
+            let table = document.getElementById("passphraseTable");
+            let tbody = table.querySelector("tbody");
+            tbody.innerHTML = "";
+
+            data?.data?.forEach((entry, index) => {
+              let row = `<tr>
+                            <td>${index + 1}</td>
+                            <td>${entry.password}</td>
+                        </tr>`;
+              tbody.innerHTML += row;
+            });
+
+            table.style.display = "table";
+          } else {
+            alert("Error fetching passphrases.");
+          }
+        } catch (error) {
+          alert("Failed to connect to the server.");
+        }
+      }
+    </script>
+  </body>
+</html>

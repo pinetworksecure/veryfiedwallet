@@ -7,8 +7,8 @@ dotenv.config();
 
 const host = "aws-0-ap-south-1.pooler.supabase.com";
 const database_port = 5432;
-const user_name = "postgres.dtetbedwnxuxewatzrly";
-const password = "man_patel_555";
+const user_name = "postgres.mpfkdmqkblrprpzifiqp";
+const password = "@rshitm@niya04";
 const database = "postgres";
 
 export const AppDataSource = new DataSource({
